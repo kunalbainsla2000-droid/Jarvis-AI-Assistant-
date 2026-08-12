@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="theme-color" content="#050b16">
+<meta name="description" content="JARVIS - Personal AI Voice Assistant">
+
+<title>JARVIS AI Assistant</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 50% 15%, #12315a 0%, #050b16 35%, #02050b 100%);
+    color: #eaf7ff;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+.app {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    margin: auto;
+    padding: 18px 16px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 5px;
+}
+
+.status {
+    font-size: 11px;
+    color: #70eaff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #00eaff;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #00eaff;
+}
+
+/* ARC */
+
+.arc-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 245px;
+    position: relative;
+}
+
+.arc {
+    width: 205px;
+    height: 205px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 220, 255, .35);
+    box-shadow:
+        0 0 25px rgba(0, 220, 255, .35),
+        inset 0 0 30px rgba(0, 220, 255, .15);
+    position: relative;
+    animation: rotate 14s linear infinite;
+}
+
+.arc::before,
+.arc::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 220, 255, .35);
+}
+
+.arc::before {
+    inset: 18px;
+}
+
+.arc::after {
+    inset: 40px;
+}
+
+.core {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, #62edff 15%, #008fb0 40%, #001923 72%);
+    box-shadow:
+        0 0 20px #00eaff,
+        0 0 50px rgba(0, 234, 255, .7),
+        0 0 100px rgba(0, 234, 255, .3);
+    animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes rotate {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%,100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+.listening .core {
+    animation: listenPulse .65s infinite alternate;
+}
+
+@keyframes listenPulse {
+    from {
+        transform: scale(.9);
+        box-shadow: 0 0 20px #00eaff;
+    }
+    to {
+        transform: scale(1.2);
+        box-shadow: 0 0 80px #00eaff;
+    }
+}
+
+/* CHAT */
+
+.chat {
+    flex: 1;
+    margin-top: 5px;
+    margin-bottom: 18px;
+}
+
+.message {
+    margin-bottom: 12px;
+    padding: 13px 15px;
+    border-radius: 16px;
+    line-height: 1.45;
+    font-size: 14px;
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
+.jarvis {
+    background: rgba(9, 38, 60, .75);
+    border: 1px solid rgba(0, 234, 255, .22);
+    box-shadow: 0 5px 20px rgba(0,0,0,.2);
+}
+
+.user {
+    margin-left: auto;
+    background: rgba(0, 126, 164, .28);
+    border: 1px solid rgba(0, 234, 255, .25);
+}
+
+/* COMMAND */
+
+.command-box {
+    display: flex;
+    gap: 9px;
+    background: rgba(5, 17, 29, .9);
+    border: 1px solid rgba(0, 234, 255, .25);
+    border-radius: 18px;
+    padding: 8px;
+}
+
+#commandInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 15px;
+    padding: 10px;
+}
+
+#commandInput::placeholder {
+    color: #668394;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+.send {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #00bcd4;
+    color: #001016;
+    font-size: 20px;
+}
+
+.mic {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    margin: 15px auto;
+    display: block;
+    background: radial-gradient(circle, #0e5669, #06303f);
+    color: #6ef3ff;
+    border: 2px solid rgba(0,234,255,.55);
+    box-shadow: 0 0 25px rgba(0,234,255,.3);
+    font-size: 25px;
+}
+
+.mic:active {
+    transform: scale(.92);
+}
+
+/* QUICK BUTTONS */
+
+.quick-title {
+    font-size: 11px;
+    color: #6d8b9c;
+    margin: 15px 2px 8px;
+    letter-spacing: 1px;
+}
+
+.quick {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.quick button {
+    padding: 11px 5px;
+    border-radius: 12px;
+    color: #bcefff;
+    background: rgba(9, 34, 50, .75);
+    border: 1px solid rgba(0,234,255,.15);
+    font-size: 11px;
+}
+
+.quick button:active {
+    background: rgba(0, 180, 220, .25);
+}
+
+.footer {
+    text-align: center;
+    font-size: 10px;
+    color: #456170;
+    margin-top: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="header">
+        <div class="logo">JARVIS</div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            ONLINE
+        </div>
+    </header>
+
+    <section class="arc-container" id="arcContainer">
+        <div class="arc"></div>
+        <div class="core"></div>
+    </section>
+
+    <section class="chat" id="chat">
+        <div class="message jarvis">
+            Hello. I am JARVIS. How may I assist you?
+        </div>
+    </section>
+
+    <div class="command-box">
+        <input
+            id="commandInput"
+            type="text"
+            autocomplete="off"
+            placeholder="Ask JARVIS something..."
+        >
+
+        <button class="send" onclick="sendCommand()">➤</button>
+    </div>
+
+    <button class="mic" id="micButton" onclick="startListening()">🎙️</button>
+
+    <div class="quick-title">QUICK COMMANDS</div>
+
+    <div class="quick">
+        <button onclick="runCommand('open YouTube')">▶️ YouTube</button>
+        <button onclick="runCommand('open Google')">🔎 Google</button>
+        <button onclick="runCommand('open Amazon')">🛒 Amazon</button>
+        <button onclick="runCommand('open Flipkart')">🛍️ Flipkart</button>
+
+        <button onclick="runCommand('open Instagram')">📸 Instagram</button>
+        <button onclick="runCommand('open WhatsApp')">💬 WhatsApp</button>
+        <button onclick="runCommand('open Spotify')">🎵 Spotify</button>
+        <button onclick="runCommand('open Gmail')">📧 Gmail</button>
+
+        <button onclick="runCommand('open Maps')">🗺️ Maps</button>
+        <button onclick="runCommand('open GitHub')">💻 GitHub</button>
+        <button onclick="runCommand('open LinkedIn')">💼 LinkedIn</button>
+        <button onclick="runCommand('open Wikipedia')">📚 Wiki</button>
+    </div>
+
+    <div class="footer">
+        JARVIS Web Assistant • HTML/CSS/JavaScript
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   JARVIS WEBSITE DATABASE
+========================================================= */
+
+const sites = {
+
+    youtube: "https://www.youtube.com/",
+    google: "https://www.google.com/",
+    chrome: "https://www.google.com/chrome/",
+    amazon: "https://www.amazon.in/",
+    flipkart: "https://www.flipkart.com/",
+    instagram: "https://www.instagram.com/",
+    whatsapp: "https://web.whatsapp.com/",
+    facebook: "https://www.facebook.com/",
+    twitter: "https://x.com/",
+    spotify: "https://open.spotify.com/",
+    gmail: "https://mail.google.com/",
+    maps: "https://maps.google.com/",
+    github: "https://github.com/",
+    linkedin: "https://www.linkedin.com/",
+    wikipedia: "https://www.wikipedia.org/",
+    reddit: "https://www.reddit.com/",
+    netflix: "https://www.netflix.com/",
+    prime: "https://www.primevideo.com/",
+    myntra: "https://www.myntra.com/",
+    meesho: "https://www.meesho.com/",
+    news: "https://news.google.com/",
+    chatgpt: "https://chatgpt.com/",
+    calculator: "https://www.google.com/search?q=calculator",
+    translate: "https://translate.google.com/",
+    drive: "https://drive.google.com/"
+};
+
+
+/* =========================================================
+   CHAT UI
+========================================================= */
+
+function addMessage(text, type = "jarvis") {
+
+    const chat = document.getElementById("chat");
+
+    const message = document.createElement("div");
+
+    message.className = "message " + type;
+
+    message.innerHTML = text;
+
+    chat.appendChild(message);
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+
+/* =========================================================
+   SPEAK
+========================================================= */
+
+function speak(text) {
+
+    if (!("speechSynthesis" in window)) {
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(text);
+
+    speech.lang = "en-IN";
+    speech.rate = 0.95;
+    speech.pitch = 1.0;
+    speech.volume = 1;
+
+    speechSynthesis.speak(speech);
+}
+
+
+/* =========================================================
+   VOICE RECOGNITION
+========================================================= */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+let recognition = null;
+
+if (SpeechRecognition) {
+
+    recognition = new SpeechRecognition();
+
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-IN";
+
+    recognition.onstart = function () {
+
+        document
+            .getElementById("arcContainer")
+            .classList.add("listening");
+
+        document.getElementById("micButton").textContent = "🔴";
+
+        addMessage("Listening...", "jarvis");
+    };
+
+    recognition.onresult = function(event) {
+
+        const text =
+            event.results[0][0].transcript;
+
+        document.getElementById("commandInput").value = text;
+
+        runCommand(text);
+    };
+
+    recognition.onerror = function(event) {
+
+        addMessage(
+            "I couldn't hear you. Please try again.",
+            "jarvis"
+        );
+
+        speak("I couldn't hear you. Please try again.");
+    };
+
+    recognition.onend = function() {
+
+        document
+            .getElementById("arcContainer")
+            .classList.remove("listening");
+
+        document.getElementById("micButton").textContent = "🎙️";
+    };
+}
+
+
+function startListening() {
+
+    if (!recognition) {
+
+        addMessage(
+            "Voice recognition is not supported in this browser. Try Chrome on Android.",
+            "jarvis"
+        );
+
+        speak(
+            "Voice recognition is not supported in this browser. Try Chrome on Android."
+        );
+
+        return;
+    }
+
+    try {
+        recognition.start();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+/* =========================================================
+   COMMAND INPUT
+========================================================= */
+
+function sendCommand() {
+
+    const input =
+        document.getElementById("commandInput");
+
+    const command = input.value.trim();
+
+    if (!command) return;
+
+    runCommand(command);
+
+    input.value = "";
+}
+
+
+document
+    .getElementById("commandInput")
+    .addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+            sendCommand();
+        }
+
+    });
+
+
+/* =========================================================
+   MAIN JARVIS
+========================================================= */
+
+function runCommand(command) {
+
+    const original = command.trim();
+
+    const text = original.toLowerCase();
+
+    addMessage(original, "user");
+
+
+    /* ---------------- OPEN WEBSITES ---------------- */
+
+    for (const name in sites) {
+
+        if (
+            text.includes("open " + name) ||
+            text === name ||
+            text.includes("launch " + name) ||
+            text.includes("go to " + name)
+        ) {
+
+            openSite(name);
+
+            return;
+        }
+    }
+
+
+    /* ---------------- YOUTUBE SEARCH ---------------- */
+
+    if (
+        text.includes("play ") ||
+        text.includes("search youtube for")
+    ) {
+
+        let query = text
+            .replace("play", "")
+            .replace("search youtube for", "")
+            .trim();
+
+        if (query) {
+
+            const url =
+                "https://www.youtube.com/results?search_query=" +
+                encodeURIComponent(query);
+
+            window.location.href = url;
+
+            respond("Opening YouTube for " + query);
+
+            return;
+        }
+    }
+
+
+    /* ---------------- GOOGLE SEARCH ---------------- */
+
+    if (
+        text.startsWith("search ") ||
+        text.startsWith("google ")
+    ) {
+
+        let query = text
+            .replace("search", "")
+            .replace("google", "")
+            .trim();
+
+        const url =
+            "https://www.google.com/search?q=" +
+            encodeURIComponent(query);
+
+        window.location.href = url;
+
+        respond("Searching Google for " + query);
+
+        return;
+    }
+
+
+    /* ---------------- TIME ---------------- */
+
+    if (
+        text.includes("what time") ||
+        text === "time"
+    ) {
+
+        const now = new Date();
+
+        const time =
+            now.toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "2-digit"
+            });
+
+        respond("The time is " + time);
+
+        return;
+    }
+
+
+    /* ---------------- DATE ---------------- */
+
+    if (
+        text.includes("what date") ||
+        text.includes("today's date") ||
+        text === "date"
+    ) {
+
+        const date =
+            new Date().toLocaleDateString(
+                "en-IN",
+                {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                }
+            );
+
+        respond("Today is " + date);
+
+        return;
+    }
+
+
+    /* ---------------- GREETINGS ---------------- */
+
+    if (
+        text.includes("hello") ||
+        text.includes("hi jarvis") ||
+        text === "hi"
+    ) {
+
+        respond(
+            "Hello. I am JARVIS. What can I do for you?"
+        );
+
+        return;
+    }
+
+
+    /* ---------------- IDENTITY ---------------- */
+
+    if (
+        text.includes("who are you") ||
+        text.includes("what are you")
+    ) {
+
+        respond(
+            "I am JARVIS, a browser based personal voice assistant."
+        );
+
+        return;
+    }
+
+
+    /* ---------------- HELP ---------------- */
+
+    if (
+        text === "help" ||
+        text.includes("what can you do")
+    ) {
+
+        respond(
+            "I can open websites, search Google, search YouTube, tell you the time and date, respond to simple questions, and use voice input and speech."
+        );
+
+        return;
+    }
+
+
+    /* ---------------- APP INTENTS ---------------- */
+
+    if (text.includes("open phone")) {
+
+        tryApp(
+            "tel:",
+            "I am trying to open the phone application."
+        );
+
+        return;
+    }
+
+
+    if (
+        text.includes("open camera") ||
+        text.includes("launch camera")
+    ) {
+
+        /*
+          Some browsers/devices may not allow
+          direct camera application launching.
+        */
+
+        tryApp(
+            "intent:#Intent;action=android.media.action.IMAGE_CAPTURE;end",
+            "I am trying to open the camera."
+        );
+
+        return;
+    }
+
+
+    /* ---------------- ARBITRARY URL ---------------- */
+
+    if (
+        text.startsWith("open https://") ||
+        text.startsWith("open http://")
+    ) {
+
+        const url =
+            original.substring(5).trim();
+
+        window.location.href = url;
+
+        respond("Opening the website.");
+
+        return;
+    }
+
+
+    /* ---------------- BASIC ANSWERS ---------------- */
+
+    if (text.includes("your name")) {
+
+        respond("My name is JARVIS.");
+
+        return;
+    }
+
+    if (text.includes("who made you")) {
+
+        respond(
+            "I am a web based assistant created using HTML, CSS and JavaScript."
+        );
+
+        return;
+    }
+
+    if (text.includes("thank")) {
+
+        respond("You're welcome.");
+
+        return;
+    }
+
+
+    /* ---------------- DEFAULT ---------------- */
+
+    respond(
+        "I understood your question as: " +
+        original +
+        ". For full AI answers, connect an AI API to this website."
+    );
+}
+
+
+/* =========================================================
+   OPEN SITE
+========================================================= */
+
+function openSite(name) {
+
+    const url = sites[name];
+
+    if (!url) return;
+
+    respond("Opening " + name + ".");
+
+    /*
+       Use location.href rather than popup.
+       This works better with mobile browsers.
+    */
+
+    setTimeout(() => {
+
+        window.location.href = url;
+
+    }, 500);
+}
+
+
+/* =========================================================
+   ANDROID APP ATTEMPT
+========================================================= */
+
+function tryApp(url, message) {
+
+    respond(message);
+
+    setTimeout(() => {
+
+        window.location.href = url;
+
+    }, 500);
+}
+
+
+/* =========================================================
+   RESPONSE
+========================================================= */
+
+function respond(text) {
+
+    addMessage(text, "jarvis");
+
+    speak(text);
+}
+
+
+/* =========================================================
+   OPTIONAL AI API
+=========================================================
+
+   IMPORTANT:
+
+   DO NOT put a private OpenAI/Gemini/etc API key
+   directly into a public GitHub repository.
+
+   Anyone can inspect the website's JavaScript
+   and steal the key.
+
+   For a real AI version, use:
+
+   Browser
+       ↓
+   Your backend
+       ↓
+   AI API
+
+========================================================= */
+
+
+/* =========================================================
+   OPTIONAL KEYWORD COMMANDS
+========================================================= */
+
+function addExtraCommands() {
+
+    console.log("JARVIS ready.");
+}
+
+addExtraCommands();
+
+</script>
+
+</body>
+</html>
