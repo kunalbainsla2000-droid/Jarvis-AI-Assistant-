@@ -4,17 +4,14 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width,
-      initial-scale=1.0,
-      maximum-scale=1.0,
-      user-scalable=no">
+      content="width=device-width, initial-scale=1.0,
+               maximum-scale=1.0, user-scalable=no">
 
 <meta name="theme-color" content="#020812">
 
 <title>JARVIS AI</title>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -24,18 +21,13 @@
 body {
     min-height: 100vh;
     background:
-        radial-gradient(
-            circle at 50% 20%,
-            #103b5a,
-            #06121f 40%,
-            #01050a 100%
-        );
-
+        radial-gradient(circle at 50% 15%, #123b56 0%, #06131f 38%, #010509 100%);
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .app {
+    width: 100%;
     max-width: 520px;
     min-height: 100vh;
     margin: auto;
@@ -43,7 +35,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-
 
 /* HEADER */
 
@@ -55,116 +46,102 @@ body {
 
 .logo {
     font-size: 28px;
-    font-weight: bold;
+    font-weight: 800;
     letter-spacing: 5px;
+    text-shadow: 0 0 15px #00eaff;
 }
 
 .online {
     font-size: 11px;
     color: #00eaff;
+    letter-spacing: 1px;
 }
 
 .dot {
     display: inline-block;
     width: 7px;
     height: 7px;
-    background: #00eaff;
-    border-radius: 50%;
     margin-right: 5px;
+    border-radius: 50%;
+    background: #00eaff;
     box-shadow: 0 0 12px #00eaff;
 }
 
-
-/* JARVIS CORE */
+/* CORE */
 
 .core-area {
-    height: 250px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+    height: 245px;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .ring {
-    width: 210px;
-    height: 210px;
-
+    width: 205px;
+    height: 205px;
+    position: absolute;
     border-radius: 50%;
-
-    border: 2px solid rgba(0, 234, 255, .35);
-
+    border: 2px solid rgba(0, 234, 255, 0.35);
     box-shadow:
-        0 0 25px rgba(0, 234, 255, .3),
-        inset 0 0 30px rgba(0, 234, 255, .15);
-
-    animation: rotate 12s linear infinite;
+        0 0 25px rgba(0, 234, 255, 0.25),
+        inset 0 0 30px rgba(0, 234, 255, 0.12);
+    animation: spin 12s linear infinite;
 }
 
 .ring::before {
     content: "";
-
     position: absolute;
-
-    width: 160px;
-    height: 160px;
-
-    margin: 23px;
-
+    width: 155px;
+    height: 155px;
+    left: 23px;
+    top: 23px;
     border-radius: 50%;
-
-    border: 1px solid rgba(0, 234, 255, .3);
+    border: 1px solid rgba(0, 234, 255, 0.35);
 }
 
 .ring::after {
     content: "";
-
     position: absolute;
-
-    width: 105px;
-    height: 105px;
-
-    margin: 50px;
-
+    width: 100px;
+    height: 100px;
+    left: 50px;
+    top: 50px;
     border-radius: 50%;
-
-    border: 1px solid rgba(0, 234, 255, .3);
+    border: 1px solid rgba(0, 234, 255, 0.4);
 }
 
 .core {
+    width: 72px;
+    height: 72px;
     position: absolute;
-
-    width: 75px;
-    height: 75px;
-
     border-radius: 50%;
-
     background:
         radial-gradient(
             circle,
-            white,
-            #66edff 20%,
-            #007c9d 50%,
-            #00151e 75%
+            white 0%,
+            #68efff 20%,
+            #0083a4 52%,
+            #00151d 78%
         );
-
     box-shadow:
         0 0 20px #00eaff,
-        0 0 60px rgba(0, 234, 255, .6);
-
-    animation: pulse 1.5s infinite;
+        0 0 55px rgba(0, 234, 255, 0.65);
+    animation: pulse 1.5s ease-in-out infinite;
 }
 
-@keyframes rotate {
-    100% {
+.listening .core {
+    animation: listening 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes spin {
+    to {
         transform: rotate(360deg);
     }
 }
 
 @keyframes pulse {
-
-    0%,100% {
+    0%, 100% {
         transform: scale(1);
     }
 
@@ -173,226 +150,201 @@ body {
     }
 }
 
+@keyframes listening {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.25);
+    }
+}
 
 /* CHAT */
 
 .chat {
     flex: 1;
+    min-height: 150px;
+    max-height: 38vh;
     overflow-y: auto;
-    margin-bottom: 15px;
+    padding: 4px 0;
+    margin-bottom: 12px;
 }
 
 .message {
-    padding: 13px 15px;
-
-    margin-bottom: 10px;
-
-    border-radius: 16px;
-
     max-width: 90%;
-
+    padding: 13px 15px;
+    margin-bottom: 10px;
+    border-radius: 16px;
     line-height: 1.5;
-
     font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .jarvis {
-    background: rgba(8, 40, 60, .8);
-
-    border: 1px solid
-        rgba(0, 234, 255, .2);
+    background: rgba(8, 40, 60, 0.82);
+    border: 1px solid rgba(0, 234, 255, 0.2);
 }
 
 .user {
     margin-left: auto;
-
-    background: rgba(0, 130, 170, .3);
-
-    border: 1px solid
-        rgba(0, 234, 255, .2);
+    background: rgba(0, 130, 170, 0.32);
+    border: 1px solid rgba(0, 234, 255, 0.2);
 }
-
 
 /* INPUT */
 
 .input-area {
     display: flex;
-    gap: 8px;
-
-    background: rgba(3, 15, 25, .9);
-
-    border: 1px solid
-        rgba(0, 234, 255, .25);
-
+    gap: 7px;
     padding: 7px;
-
     border-radius: 17px;
+    background: rgba(3, 15, 25, 0.95);
+    border: 1px solid rgba(0, 234, 255, 0.25);
 }
 
 input {
+    min-width: 0;
     flex: 1;
-
-    background: transparent;
-
-    border: none;
-
-    outline: none;
-
-    color: white;
-
-    font-size: 15px;
-
     padding: 10px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    font-size: 15px;
 }
 
 input::placeholder {
-    color: #688392;
+    color: #66808e;
 }
 
 .send {
     width: 45px;
     height: 45px;
-
     border: none;
-
     border-radius: 13px;
-
     background: #00bfd8;
-
+    color: #001017;
     font-size: 20px;
-
     cursor: pointer;
 }
 
-
-/* MICROPHONE */
+/* MIC */
 
 .mic {
     width: 65px;
     height: 65px;
-
-    margin: 15px auto;
-
+    margin: 14px auto;
+    border: 2px solid rgba(0, 234, 255, 0.5);
     border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            #145e73,
-            #062d3b
-        );
-
-    border: 2px solid
-        rgba(0,234,255,.5);
-
+    background: radial-gradient(circle, #145e73, #062d3b);
     color: white;
-
     font-size: 25px;
-
-    box-shadow:
-        0 0 25px rgba(0,234,255,.3);
+    box-shadow: 0 0 25px rgba(0, 234, 255, 0.3);
+    cursor: pointer;
 }
 
 .mic:active {
-    transform: scale(.9);
+    transform: scale(0.92);
 }
 
+/* QUICK BUTTONS */
 
-/* QUICK COMMANDS */
-
-.title {
-    color: #688696;
-
-    font-size: 11px;
-
+.quick-title {
     margin-bottom: 8px;
-
+    color: #688696;
+    font-size: 11px;
     letter-spacing: 1px;
 }
 
 .quick {
     display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
 }
 
 .quick button {
-    padding: 11px 4px;
-
-    background:
-        rgba(8,35,50,.8);
-
-    border:
-        1px solid
-        rgba(0,234,255,.15);
-
+    min-height: 45px;
+    padding: 7px 3px;
+    border: 1px solid rgba(0, 234, 255, 0.15);
     border-radius: 12px;
-
+    background: rgba(8, 35, 50, 0.82);
     color: #b9eff8;
-
     font-size: 11px;
+    cursor: pointer;
 }
 
 .quick button:active {
-    background:
-        rgba(0,180,220,.3);
+    background: rgba(0, 180, 220, 0.3);
+    transform: scale(0.97);
 }
 
 .footer {
+    margin-top: 14px;
     text-align: center;
-
     color: #466170;
-
     font-size: 10px;
-
-    margin-top: 15px;
 }
 
+@media (max-height: 700px) {
+    .core-area {
+        height: 190px;
+    }
+
+    .ring {
+        width: 160px;
+        height: 160px;
+    }
+
+    .ring::before {
+        width: 120px;
+        height: 120px;
+        left: 18px;
+        top: 18px;
+    }
+
+    .ring::after {
+        width: 75px;
+        height: 75px;
+        left: 41px;
+        top: 41px;
+    }
+
+    .core {
+        width: 60px;
+        height: 60px;
+    }
+}
 </style>
 </head>
-
 
 <body>
 
 <div class="app">
 
     <div class="header">
-
-        <div class="logo">
-            JARVIS
-        </div>
+        <div class="logo">JARVIS</div>
 
         <div class="online">
             <span class="dot"></span>
             ONLINE
         </div>
-
     </div>
 
 
-    <div class="core-area">
-
+    <div class="core-area" id="coreArea">
         <div class="ring"></div>
-
         <div class="core"></div>
-
     </div>
 
 
-    <div
-        class="chat"
-        id="chat"
-    >
+    <div class="chat" id="chat">
 
         <div class="message jarvis">
-
             Hello. I am JARVIS.
             Your personal AI assistant.
             How may I help you?
-
         </div>
 
     </div>
@@ -402,14 +354,14 @@ input::placeholder {
 
         <input
             id="input"
+            type="text"
             placeholder="Ask JARVIS anything..."
             autocomplete="off"
         >
 
         <button
             class="send"
-            onclick="sendMessage()"
-        >
+            onclick="sendMessage()">
             ➤
         </button>
 
@@ -418,13 +370,13 @@ input::placeholder {
 
     <button
         class="mic"
-        onclick="startVoice()"
-    >
+        id="micButton"
+        onclick="startVoice()">
         🎙️
     </button>
 
 
-    <div class="title">
+    <div class="quick-title">
         QUICK COMMANDS
     </div>
 
@@ -479,6 +431,22 @@ input::placeholder {
             📚 Wikipedia
         </button>
 
+        <button onclick="command('open Reddit')">
+            👽 Reddit
+        </button>
+
+        <button onclick="command('open Netflix')">
+            🎬 Netflix
+        </button>
+
+        <button onclick="command('open Myntra')">
+            👕 Myntra
+        </button>
+
+        <button onclick="command('open ChatGPT')">
+            🤖 ChatGPT
+        </button>
+
     </div>
 
 
@@ -491,114 +459,85 @@ input::placeholder {
 
 <script>
 
-
-/* =====================================================
-   OPENAI API KEY
-===================================================== */
-
 /*
-   LOCAL TESTING ONLY.
+==========================================================
+                 OPENAI API KEY
+==========================================================
 
-   Replace the text inside the quotes with your key.
+IMPORTANT:
 
-   Example:
+Replace ONLY the text below.
 
-   const OPENAI_API_KEY =
-       "your-real-api-key-here";
+Example:
 
+const OPENAI_API_KEY =
+    "your-api-key-here";
+
+DO NOT share your API key with anyone.
+
+Because this is a GitHub Pages site, the key will
+technically be visible to visitors who inspect the
+website. Use this setup only for testing.
 */
 
-const OPENAI_API_KEY = "sk-proj-j6gOpdQsqwxNFwF8D5hxpv3SBDegvpfx9YUhuakWs3agimq_6xcFXunA9Tsavo52hE_1aTdeQfT3BlbkFJfu9h_55Qtozx9kRqvVasUXX7fktbRtJHlhLCNTzo_tvL6X5Lyv55Pm8DDQJqweh 4ZqeLP4xWAA;" 
+const OPENAI_API_KEY =
+    "PASTE_YOUR_OPENAI_API_KEY_HERE";
 
 
-/* =====================================================
-   OPENAI MODEL
-===================================================== */
+/*
+==========================================================
+                 OPENAI MODEL
+==========================================================
+
+Use a model available to your API project.
+
+If your API account doesn't have access to the model
+below, replace it with a model available in your project.
+*/
 
 const OPENAI_MODEL = "gpt-5.6";
 
 
-/* =====================================================
-   WEBSITE DATABASE
-===================================================== */
+/*
+==========================================================
+                 WEBSITE LIST
+==========================================================
+*/
 
 const websites = {
 
-    youtube:
-        "https://www.youtube.com/",
-
-    google:
-        "https://www.google.com/",
-
-    chrome:
-        "https://www.google.com/chrome/",
-
-    amazon:
-        "https://www.amazon.in/",
-
-    flipkart:
-        "https://www.flipkart.com/",
-
-    instagram:
-        "https://www.instagram.com/",
-
-    whatsapp:
-        "https://web.whatsapp.com/",
-
-    facebook:
-        "https://www.facebook.com/",
-
-    twitter:
-        "https://x.com/",
-
-    spotify:
-        "https://open.spotify.com/",
-
-    gmail:
-        "https://mail.google.com/",
-
-    maps:
-        "https://maps.google.com/",
-
-    github:
-        "https://github.com/",
-
-    linkedin:
-        "https://www.linkedin.com/",
-
-    wikipedia:
-        "https://www.wikipedia.org/",
-
-    reddit:
-        "https://www.reddit.com/",
-
-    netflix:
-        "https://www.netflix.com/",
-
-    myntra:
-        "https://www.myntra.com/",
-
-    meesho:
-        "https://www.meesho.com/",
-
-    news:
-        "https://news.google.com/",
-
-    chatgpt:
-        "https://chatgpt.com/",
-
-    drive:
-        "https://drive.google.com/",
-
-    translate:
-        "https://translate.google.com/"
+    youtube: "https://www.youtube.com/",
+    google: "https://www.google.com/",
+    chrome: "https://www.google.com/chrome/",
+    amazon: "https://www.amazon.in/",
+    flipkart: "https://www.flipkart.com/",
+    instagram: "https://www.instagram.com/",
+    whatsapp: "https://web.whatsapp.com/",
+    facebook: "https://www.facebook.com/",
+    twitter: "https://x.com/",
+    spotify: "https://open.spotify.com/",
+    gmail: "https://mail.google.com/",
+    maps: "https://maps.google.com/",
+    github: "https://github.com/",
+    linkedin: "https://www.linkedin.com/",
+    wikipedia: "https://www.wikipedia.org/",
+    reddit: "https://www.reddit.com/",
+    netflix: "https://www.netflix.com/",
+    myntra: "https://www.myntra.com/",
+    meesho: "https://www.meesho.com/",
+    news: "https://news.google.com/",
+    chatgpt: "https://chatgpt.com/",
+    drive: "https://drive.google.com/",
+    translate: "https://translate.google.com/"
 
 };
 
 
-/* =====================================================
-   CHAT
-===================================================== */
+/*
+==========================================================
+                 CHAT FUNCTIONS
+==========================================================
+*/
 
 function addMessage(text, type) {
 
@@ -611,7 +550,8 @@ function addMessage(text, type) {
     message.className =
         "message " + type;
 
-    message.textContent = text;
+    message.textContent =
+        text;
 
     chat.appendChild(message);
 
@@ -620,14 +560,11 @@ function addMessage(text, type) {
 }
 
 
-/* =====================================================
-   TEXT TO SPEECH
-===================================================== */
-
 function speak(text) {
 
-    if (!("speechSynthesis" in window))
+    if (!("speechSynthesis" in window)) {
         return;
+    }
 
     speechSynthesis.cancel();
 
@@ -635,41 +572,33 @@ function speak(text) {
         new SpeechSynthesisUtterance(text);
 
     speech.lang = "en-IN";
-
     speech.rate = 0.95;
-
     speech.pitch = 1;
-
     speech.volume = 1;
 
     speechSynthesis.speak(speech);
 }
 
 
-/* =====================================================
-   JARVIS RESPONSE
-===================================================== */
-
 function respond(text) {
 
-    addMessage(
-        text,
-        "jarvis"
-    );
+    addMessage(text, "jarvis");
 
     speak(text);
 }
 
 
-/* =====================================================
-   VOICE RECOGNITION
-===================================================== */
+/*
+==========================================================
+                 VOICE RECOGNITION
+==========================================================
+*/
 
 const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
 
-let recognition;
+let recognition = null;
 
 
 if (SpeechRecognition) {
@@ -687,24 +616,65 @@ if (SpeechRecognition) {
         false;
 
 
+    recognition.onstart =
+        function () {
+
+            document
+                .getElementById("coreArea");
+
+            document
+                .getElementById("coreArea")
+                ?.classList
+                .add("listening");
+
+            document
+                .getElementById("micButton")
+                .textContent = "🔴";
+
+        };
+
+
+    recognition.onend =
+        function () {
+
+            document
+                .getElementById("coreArea")
+                ?.classList
+                .remove("listening");
+
+            document
+                .getElementById("micButton")
+                .textContent = "🎙️";
+
+        };
+
+
     recognition.onresult =
-        function(event) {
+        function (event) {
 
             const text =
-                event
-                .results[0][0]
-                .transcript;
+                event.results[0][0].transcript;
 
             document
                 .getElementById("input")
                 .value = text;
 
             command(text);
+
         };
 
 
     recognition.onerror =
-        function() {
+        function () {
+
+            document
+                .getElementById("coreArea")
+                ?.classList
+                .remove("listening");
+
+            document
+                .getElementById("micButton")
+                .textContent = "🎙️";
 
             respond(
                 "Sorry, I couldn't hear you."
@@ -730,18 +700,19 @@ function startVoice() {
 
         recognition.start();
 
-    } catch(error) {
+    } catch (error) {
 
         console.log(error);
 
     }
-
 }
 
 
-/* =====================================================
-   TEXT INPUT
-===================================================== */
+/*
+==========================================================
+                 TEXT INPUT
+==========================================================
+*/
 
 function sendMessage() {
 
@@ -751,8 +722,9 @@ function sendMessage() {
     const text =
         input.value.trim();
 
-    if (!text)
+    if (!text) {
         return;
+    }
 
     input.value = "";
 
@@ -764,38 +736,35 @@ document
     .getElementById("input")
     .addEventListener(
         "keydown",
-        function(event) {
+        function (event) {
 
             if (event.key === "Enter") {
-
                 sendMessage();
-
             }
 
         }
     );
 
 
-/* =====================================================
-   COMMAND ENGINE
-===================================================== */
+/*
+==========================================================
+                 COMMAND ENGINE
+==========================================================
+*/
 
 function command(text) {
 
-    addMessage(
-        text,
-        "user"
-    );
+    addMessage(text, "user");
 
     const lower =
         text.toLowerCase().trim();
 
 
-    /* WEBSITE COMMANDS */
+    /*
+    OPEN WEBSITE
+    */
 
-    for (
-        const site in websites
-    ) {
+    for (const site in websites) {
 
         if (
 
@@ -820,7 +789,7 @@ function command(text) {
             );
 
             setTimeout(
-                function() {
+                function () {
 
                     window.location.href =
                         websites[site];
@@ -835,29 +804,29 @@ function command(text) {
     }
 
 
-    /* YOUTUBE SEARCH */
+    /*
+    YOUTUBE SEARCH / PLAY
+    */
 
     if (
 
         lower.startsWith("play ") ||
 
-        lower.includes(
-            "search youtube for"
-        )
+        lower.startsWith("search youtube for ")
 
     ) {
 
         let query =
             lower
-            .replace(
-                "search youtube for",
-                ""
-            )
-            .replace(
-                "play",
-                ""
-            )
-            .trim();
+                .replace(
+                    "search youtube for",
+                    ""
+                )
+                .replace(
+                    "play",
+                    ""
+                )
+                .trim();
 
 
         if (query) {
@@ -868,7 +837,7 @@ function command(text) {
             );
 
             setTimeout(
-                function() {
+                function () {
 
                     window.location.href =
                         "https://www.youtube.com/results?search_query=" +
@@ -884,31 +853,29 @@ function command(text) {
     }
 
 
-    /* GOOGLE SEARCH */
+    /*
+    GOOGLE SEARCH
+    */
 
     if (
 
-        lower.startsWith(
-            "search "
-        ) ||
+        lower.startsWith("search ") ||
 
-        lower.startsWith(
-            "google "
-        )
+        lower.startsWith("google ")
 
     ) {
 
         let query =
             lower
-            .replace(
-                "search",
-                ""
-            )
-            .replace(
-                "google",
-                ""
-            )
-            .trim();
+                .replace("search", "")
+                .replace("google", "")
+                .trim();
+
+
+        if (!query) {
+            respond("What would you like me to search for?");
+            return;
+        }
 
 
         respond(
@@ -918,7 +885,7 @@ function command(text) {
 
 
         setTimeout(
-            function() {
+            function () {
 
                 window.location.href =
                     "https://www.google.com/search?q=" +
@@ -929,44 +896,45 @@ function command(text) {
         );
 
         return;
-
     }
 
 
-    /* TIME */
+    /*
+    TIME
+    */
 
     if (
 
+        lower === "time" ||
+
         lower.includes(
             "what time"
-        ) ||
-
-        lower === "time"
+        )
 
     ) {
 
         const time =
             new Date()
-            .toLocaleTimeString(
-                "en-IN",
-                {
-                    hour: "numeric",
-                    minute: "2-digit"
-                }
-            );
+                .toLocaleTimeString(
+                    "en-IN",
+                    {
+                        hour: "numeric",
+                        minute: "2-digit"
+                    }
+                );
 
 
         respond(
-            "The time is " +
-            time
+            "The time is " + time
         );
 
         return;
-
     }
 
 
-    /* DATE */
+    /*
+    DATE
+    */
 
     if (
 
@@ -976,41 +944,39 @@ function command(text) {
 
         lower.includes(
             "today's date"
-        )
+        ) ||
+
+        lower === "date"
 
     ) {
 
         const date =
             new Date()
-            .toLocaleDateString(
-                "en-IN",
-                {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                }
-            );
+                .toLocaleDateString(
+                    "en-IN",
+                    {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    }
+                );
 
 
         respond(
-            "Today is " +
-            date
+            "Today is " + date
         );
 
         return;
-
     }
 
 
-    /* CAMERA */
+    /*
+    CAMERA
+    */
 
     if (
-
-        lower.includes(
-            "open camera"
-        )
-
+        lower.includes("open camera")
     ) {
 
         respond(
@@ -1018,21 +984,20 @@ function command(text) {
         );
 
         window.location.href =
-            "intent:#Intent;action=android.media.action.IMAGE_CAPTURE;end";
+            "intent:#Intent;" +
+            "action=android.media.action.IMAGE_CAPTURE;" +
+            "end";
 
         return;
-
     }
 
 
-    /* PHONE */
+    /*
+    PHONE
+    */
 
     if (
-
-        lower.includes(
-            "open phone"
-        )
-
+        lower.includes("open phone")
     ) {
 
         respond(
@@ -1043,20 +1008,39 @@ function command(text) {
             "tel:";
 
         return;
-
     }
 
 
-    /* OTHERWISE ASK OPENAI */
+    /*
+    EMAIL
+    */
+
+    if (
+        lower.includes("open email") ||
+        lower.includes("open gmail")
+    ) {
+
+        window.location.href =
+            websites.gmail;
+
+        return;
+    }
+
+
+    /*
+    IF NO LOCAL COMMAND:
+    SEND TO OPENAI
+    */
 
     askOpenAI(text);
-
 }
 
 
-/* =====================================================
-   OPENAI API
-===================================================== */
+/*
+==========================================================
+                 OPENAI API
+==========================================================
+*/
 
 async function askOpenAI(question) {
 
@@ -1065,22 +1049,38 @@ async function askOpenAI(question) {
         !OPENAI_API_KEY ||
 
         OPENAI_API_KEY ===
-"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"
+        "PASTE_YOUR_OPENAI_API_KEY_HERE"
 
     ) {
 
         respond(
-            "Your OpenAI API key has not been added yet."
+            "Please add your OpenAI API key in the code first."
         );
 
         return;
-
     }
 
 
-    respond(
-        "Thinking..."
-    );
+    /*
+    SHOW THINKING
+    */
+
+    const chat =
+        document.getElementById("chat");
+
+    const thinking =
+        document.createElement("div");
+
+    thinking.className =
+        "message jarvis";
+
+    thinking.textContent =
+        "Thinking...";
+
+    chat.appendChild(thinking);
+
+    chat.scrollTop =
+        chat.scrollHeight;
 
 
     try {
@@ -1111,22 +1111,36 @@ async function askOpenAI(question) {
 
                             instructions:
                                 `
-You are JARVIS, a helpful,
-friendly personal AI assistant.
+You are JARVIS, a friendly
+personal AI assistant.
 
-Answer clearly and concisely.
+Answer the user clearly and
+helpfully.
 
-The user may speak to you
-using voice.
+Keep normal answers reasonably
+short because JARVIS will read
+the answer aloud.
 
-Do not claim that you can
-control the phone unless the
-browser actually gives you
-that ability.
+You can help with:
 
-You can explain programming,
-science, mathematics, general
-knowledge, and other topics.
+- school subjects
+- mathematics
+- science
+- programming
+- JavaScript
+- Python
+- HTML
+- CSS
+- technology
+- general knowledge
+- explanations
+- brainstorming
+
+If the user asks you to perform
+an action that this browser cannot
+actually perform, be honest about it.
+Do not pretend that you controlled
+the phone when you did not.
 `,
 
                             input:
@@ -1138,32 +1152,34 @@ knowledge, and other topics.
             );
 
 
+        const data =
+            await response.json();
+
+
         if (!response.ok) {
 
-            const error =
-                await response.text();
-
-            console.error(error);
-
-            respond(
-                "I couldn't connect to the OpenAI API."
+            console.error(
+                "OpenAI API error:",
+                data
             );
+
+            thinking.textContent =
+                "OpenAI error: " +
+                (
+                    data?.error?.message ||
+                    "Request failed."
+                );
 
             return;
         }
 
 
-        const data =
-            await response.json();
-
+        /*
+        EXTRACT RESPONSE TEXT
+        */
 
         let answer = "";
 
-
-        /*
-           Responses API output can contain
-           multiple output items.
-        */
 
         if (data.output) {
 
@@ -1173,28 +1189,22 @@ knowledge, and other topics.
             ) {
 
                 if (
-                    item.type ===
-                    "message"
+                    item.type === "message" &&
+                    item.content
                 ) {
 
-                    if (
-                        item.content
+                    for (
+                        const part
+                        of item.content
                     ) {
 
-                        for (
-                            const part
-                            of item.content
+                        if (
+                            part.type ===
+                            "output_text"
                         ) {
 
-                            if (
-                                part.type ===
-                                "output_text"
-                            ) {
-
-                                answer +=
-                                    part.text;
-
-                            }
+                            answer +=
+                                part.text;
 
                         }
 
@@ -1207,6 +1217,10 @@ knowledge, and other topics.
         }
 
 
+        /*
+        FALLBACK
+        */
+
         if (!answer) {
 
             answer =
@@ -1216,60 +1230,30 @@ knowledge, and other topics.
 
 
         /*
-           Replace "Thinking..."
+        DISPLAY
         */
 
-        const messages =
-            document
-            .getElementById("chat")
-            .querySelectorAll(
-                ".jarvis"
-            );
+        thinking.textContent =
+            answer;
 
-        if (messages.length) {
 
-            const last =
-                messages[
-                    messages.length - 1
-                ];
-
-            if (
-                last.textContent ===
-                "Thinking..."
-            ) {
-
-                last.textContent =
-                    answer;
-
-            } else {
-
-                addMessage(
-                    answer,
-                    "jarvis"
-                );
-
-            }
-
-        } else {
-
-            addMessage(
-                answer,
-                "jarvis"
-            );
-
-        }
-
+        /*
+        SPEAK
+        */
 
         speak(answer);
 
 
-    } catch(error) {
+    } catch (error) {
 
-        console.error(error);
-
-        respond(
-            "There was a connection error while contacting the AI."
+        console.error(
+            "Connection error:",
+            error
         );
+
+        thinking.textContent =
+            "Connection error. " +
+            error.message;
 
     }
 
