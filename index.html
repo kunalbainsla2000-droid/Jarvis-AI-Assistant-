@@ -1,1264 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. Web Assistant</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-               maximum-scale=1.0, user-scalable=no">
+        body {
+            background-color: #030a16;
+            color: #00f0ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-<meta name="theme-color" content="#020812">
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: rgba(4, 20, 40, 0.8);
+            border: 1px solid #00f0ff55;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
 
-<title>JARVIS AI</title>
+        /* Arc Reactor Visualizer */
+        .reactor {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #00f0ff;
+            box-shadow: 0 0 20px #00f0ff, inset 0 0 20px #00f0ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
 
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+        .reactor-inner {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #00f0ff;
+            box-shadow: 0 0 15px #00f0ff;
+        }
 
-body {
-    min-height: 100vh;
-    background:
-        radial-gradient(circle at 50% 15%, #123b56 0%, #06131f 38%, #010509 100%);
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-}
+        .listening {
+            animation: pulse 1.2s infinite alternate;
+            border-color: #ff2a6d;
+            box-shadow: 0 0 30px #ff2a6d, inset 0 0 30px #ff2a6d;
+        }
+        .listening .reactor-inner {
+            background: #ff2a6d;
+            box-shadow: 0 0 20px #ff2a6d;
+        }
 
-.app {
-    width: 100%;
-    max-width: 520px;
-    min-height: 100vh;
-    margin: auto;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-}
+        @keyframes pulse {
+            0% { transform: scale(0.95); }
+            100% { transform: scale(1.08); }
+        }
 
-/* HEADER */
+        h1 {
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px #00f0ff;
+        }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .status {
+            font-size: 0.9rem;
+            color: #70a0c0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-.logo {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: 5px;
-    text-shadow: 0 0 15px #00eaff;
-}
+        .display-box {
+            width: 100%;
+            min-height: 120px;
+            max-height: 250px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #00f0ff33;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+            color: #d0f0ff;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
 
-.online {
-    font-size: 11px;
-    color: #00eaff;
-    letter-spacing: 1px;
-}
+        .controls {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }
 
-.dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    margin-right: 5px;
-    border-radius: 50%;
-    background: #00eaff;
-    box-shadow: 0 0 12px #00eaff;
-}
+        input[type="text"] {
+            flex: 1;
+            background: rgba(0, 10, 25, 0.8);
+            border: 1px solid #00f0ff55;
+            border-radius: 6px;
+            padding: 12px 16px;
+            color: #fff;
+            outline: none;
+        }
 
-/* CORE */
+        input[type="text"]:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+        }
 
-.core-area {
-    height: 245px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        button {
+            background: #00f0ff1a;
+            border: 1px solid #00f0ff;
+            color: #00f0ff;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
 
-.ring {
-    width: 205px;
-    height: 205px;
-    position: absolute;
-    border-radius: 50%;
-    border: 2px solid rgba(0, 234, 255, 0.35);
-    box-shadow:
-        0 0 25px rgba(0, 234, 255, 0.25),
-        inset 0 0 30px rgba(0, 234, 255, 0.12);
-    animation: spin 12s linear infinite;
-}
+        button:hover {
+            background: #00f0ff;
+            color: #030a16;
+            box-shadow: 0 0 15px #00f0ff;
+        }
 
-.ring::before {
-    content: "";
-    position: absolute;
-    width: 155px;
-    height: 155px;
-    left: 23px;
-    top: 23px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 234, 255, 0.35);
-}
-
-.ring::after {
-    content: "";
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    left: 50px;
-    top: 50px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 234, 255, 0.4);
-}
-
-.core {
-    width: 72px;
-    height: 72px;
-    position: absolute;
-    border-radius: 50%;
-    background:
-        radial-gradient(
-            circle,
-            white 0%,
-            #68efff 20%,
-            #0083a4 52%,
-            #00151d 78%
-        );
-    box-shadow:
-        0 0 20px #00eaff,
-        0 0 55px rgba(0, 234, 255, 0.65);
-    animation: pulse 1.5s ease-in-out infinite;
-}
-
-.listening .core {
-    animation: listening 0.5s ease-in-out infinite alternate;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-@keyframes listening {
-    from {
-        transform: scale(1);
-    }
-
-    to {
-        transform: scale(1.25);
-    }
-}
-
-/* CHAT */
-
-.chat {
-    flex: 1;
-    min-height: 150px;
-    max-height: 38vh;
-    overflow-y: auto;
-    padding: 4px 0;
-    margin-bottom: 12px;
-}
-
-.message {
-    max-width: 90%;
-    padding: 13px 15px;
-    margin-bottom: 10px;
-    border-radius: 16px;
-    line-height: 1.5;
-    font-size: 14px;
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-
-.jarvis {
-    background: rgba(8, 40, 60, 0.82);
-    border: 1px solid rgba(0, 234, 255, 0.2);
-}
-
-.user {
-    margin-left: auto;
-    background: rgba(0, 130, 170, 0.32);
-    border: 1px solid rgba(0, 234, 255, 0.2);
-}
-
-/* INPUT */
-
-.input-area {
-    display: flex;
-    gap: 7px;
-    padding: 7px;
-    border-radius: 17px;
-    background: rgba(3, 15, 25, 0.95);
-    border: 1px solid rgba(0, 234, 255, 0.25);
-}
-
-input {
-    min-width: 0;
-    flex: 1;
-    padding: 10px;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: white;
-    font-size: 15px;
-}
-
-input::placeholder {
-    color: #66808e;
-}
-
-.send {
-    width: 45px;
-    height: 45px;
-    border: none;
-    border-radius: 13px;
-    background: #00bfd8;
-    color: #001017;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-/* MIC */
-
-.mic {
-    width: 65px;
-    height: 65px;
-    margin: 14px auto;
-    border: 2px solid rgba(0, 234, 255, 0.5);
-    border-radius: 50%;
-    background: radial-gradient(circle, #145e73, #062d3b);
-    color: white;
-    font-size: 25px;
-    box-shadow: 0 0 25px rgba(0, 234, 255, 0.3);
-    cursor: pointer;
-}
-
-.mic:active {
-    transform: scale(0.92);
-}
-
-/* QUICK BUTTONS */
-
-.quick-title {
-    margin-bottom: 8px;
-    color: #688696;
-    font-size: 11px;
-    letter-spacing: 1px;
-}
-
-.quick {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-}
-
-.quick button {
-    min-height: 45px;
-    padding: 7px 3px;
-    border: 1px solid rgba(0, 234, 255, 0.15);
-    border-radius: 12px;
-    background: rgba(8, 35, 50, 0.82);
-    color: #b9eff8;
-    font-size: 11px;
-    cursor: pointer;
-}
-
-.quick button:active {
-    background: rgba(0, 180, 220, 0.3);
-    transform: scale(0.97);
-}
-
-.footer {
-    margin-top: 14px;
-    text-align: center;
-    color: #466170;
-    font-size: 10px;
-}
-
-@media (max-height: 700px) {
-    .core-area {
-        height: 190px;
-    }
-
-    .ring {
-        width: 160px;
-        height: 160px;
-    }
-
-    .ring::before {
-        width: 120px;
-        height: 120px;
-        left: 18px;
-        top: 18px;
-    }
-
-    .ring::after {
-        width: 75px;
-        height: 75px;
-        left: 41px;
-        top: 41px;
-    }
-
-    .core {
-        width: 60px;
-        height: 60px;
-    }
-}
-</style>
+        .quick-commands {
+            font-size: 0.8rem;
+            color: #5080a0;
+            text-align: center;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="app">
+<div class="container">
+    <h1>J.A.R.V.I.S.</h1>
+    <div class="reactor" id="reactor">
+        <div class="reactor-inner"></div>
+    </div>
+    <div class="status" id="statusText">System Standby</div>
 
-    <div class="header">
-        <div class="logo">JARVIS</div>
-
-        <div class="online">
-            <span class="dot"></span>
-            ONLINE
-        </div>
+    <div class="display-box" id="output">
+        Welcome back, Sir. How may I assist you today?
     </div>
 
-
-    <div class="core-area" id="coreArea">
-        <div class="ring"></div>
-        <div class="core"></div>
+    <div class="controls">
+        <input type="text" id="userInput" placeholder="Ask JARVIS or give a command..." onkeydown="if(event.key==='Enter') processInput()">
+        <button onclick="processInput()">Send</button>
+        <button onclick="toggleListening()" id="micBtn">🎙️ Voice</button>
     </div>
 
-
-    <div class="chat" id="chat">
-
-        <div class="message jarvis">
-            Hello. I am JARVIS.
-            Your personal AI assistant.
-            How may I help you?
-        </div>
-
+    <div class="quick-commands">
+        Try saying: <i>"Open Google"</i>, <i>"Open YouTube"</i>, <i>"Open NY Times"</i>, or ask any question.
     </div>
-
-
-    <div class="input-area">
-
-        <input
-            id="input"
-            type="text"
-            placeholder="Ask JARVIS anything..."
-            autocomplete="off"
-        >
-
-        <button
-            class="send"
-            onclick="sendMessage()">
-            ➤
-        </button>
-
-    </div>
-
-
-    <button
-        class="mic"
-        id="micButton"
-        onclick="startVoice()">
-        🎙️
-    </button>
-
-
-    <div class="quick-title">
-        QUICK COMMANDS
-    </div>
-
-
-    <div class="quick">
-
-        <button onclick="command('open YouTube')">
-            ▶️ YouTube
-        </button>
-
-        <button onclick="command('open Google')">
-            🔎 Google
-        </button>
-
-        <button onclick="command('open Amazon')">
-            🛒 Amazon
-        </button>
-
-        <button onclick="command('open Flipkart')">
-            🛍️ Flipkart
-        </button>
-
-        <button onclick="command('open Instagram')">
-            📸 Instagram
-        </button>
-
-        <button onclick="command('open WhatsApp')">
-            💬 WhatsApp
-        </button>
-
-        <button onclick="command('open Spotify')">
-            🎵 Spotify
-        </button>
-
-        <button onclick="command('open Gmail')">
-            📧 Gmail
-        </button>
-
-        <button onclick="command('open Maps')">
-            🗺️ Maps
-        </button>
-
-        <button onclick="command('open GitHub')">
-            💻 GitHub
-        </button>
-
-        <button onclick="command('open LinkedIn')">
-            💼 LinkedIn
-        </button>
-
-        <button onclick="command('open Wikipedia')">
-            📚 Wikipedia
-        </button>
-
-        <button onclick="command('open Reddit')">
-            👽 Reddit
-        </button>
-
-        <button onclick="command('open Netflix')">
-            🎬 Netflix
-        </button>
-
-        <button onclick="command('open Myntra')">
-            👕 Myntra
-        </button>
-
-        <button onclick="command('open ChatGPT')">
-            🤖 ChatGPT
-        </button>
-
-    </div>
-
-
-    <div class="footer">
-        JARVIS AI • HTML / CSS / JavaScript
-    </div>
-
 </div>
 
-
 <script>
+    // ⚠️ REPLACE THIS WITH YOUR GEMINI API KEY
+    const GEMINI_API_KEY = "AQ.Ab8RN6Issm8J4PKNmA_PLFzERCDWl35LlyoG5O_cHvaeYLjVyA";
 
-/*
-==========================================================
-                 OPENAI API KEY
-==========================================================
+    const output = document.getElementById('output');
+    const statusText = document.getElementById('statusText');
+    const reactor = document.getElementById('reactor');
+    let recognition = null;
+    let isListening = false;
 
-IMPORTANT:
+    // Speech Recognition Setup
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
 
-Replace ONLY the text below.
-
-Example:
-
-const OPENAI_API_KEY =
-    "your-api-key-here";
-
-DO NOT share your API key with anyone.
-
-Because this is a GitHub Pages site, the key will
-technically be visible to visitors who inspect the
-website. Use this setup only for testing.
-*/
-
-const OPENAI_API_KEY ="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" ;
-
-
-/*
-==========================================================
-                 OPENAI MODEL
-==========================================================
-
-Use a model available to your API project.
-
-If your API account doesn't have access to the model
-below, replace it with a model available in your project.
-*/
-
-const OPENAI_MODEL = "gpt-5.6";
-
-
-/*
-==========================================================
-                 WEBSITE LIST
-==========================================================
-*/
-
-const websites = {
-
-    youtube: "https://www.youtube.com/",
-    google: "https://www.google.com/",
-    chrome: "https://www.google.com/chrome/",
-    amazon: "https://www.amazon.in/",
-    flipkart: "https://www.flipkart.com/",
-    instagram: "https://www.instagram.com/",
-    whatsapp: "https://web.whatsapp.com/",
-    facebook: "https://www.facebook.com/",
-    twitter: "https://x.com/",
-    spotify: "https://open.spotify.com/",
-    gmail: "https://mail.google.com/",
-    maps: "https://maps.google.com/",
-    github: "https://github.com/",
-    linkedin: "https://www.linkedin.com/",
-    wikipedia: "https://www.wikipedia.org/",
-    reddit: "https://www.reddit.com/",
-    netflix: "https://www.netflix.com/",
-    myntra: "https://www.myntra.com/",
-    meesho: "https://www.meesho.com/",
-    news: "https://news.google.com/",
-    chatgpt: "https://chatgpt.com/",
-    drive: "https://drive.google.com/",
-    translate: "https://translate.google.com/"
-
-};
-
-
-/*
-==========================================================
-                 CHAT FUNCTIONS
-==========================================================
-*/
-
-function addMessage(text, type) {
-
-    const chat =
-        document.getElementById("chat");
-
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "message " + type;
-
-    message.textContent =
-        text;
-
-    chat.appendChild(message);
-
-    chat.scrollTop =
-        chat.scrollHeight;
-}
-
-
-function speak(text) {
-
-    if (!("speechSynthesis" in window)) {
-        return;
-    }
-
-    speechSynthesis.cancel();
-
-    const speech =
-        new SpeechSynthesisUtterance(text);
-
-    speech.lang = "en-IN";
-    speech.rate = 0.95;
-    speech.pitch = 1;
-    speech.volume = 1;
-
-    speechSynthesis.speak(speech);
-}
-
-
-function respond(text) {
-
-    addMessage(text, "jarvis");
-
-    speak(text);
-}
-
-
-/*
-==========================================================
-                 VOICE RECOGNITION
-==========================================================
-*/
-
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-let recognition = null;
-
-
-if (SpeechRecognition) {
-
-    recognition =
-        new SpeechRecognition();
-
-    recognition.lang =
-        "en-IN";
-
-    recognition.continuous =
-        false;
-
-    recognition.interimResults =
-        false;
-
-
-    recognition.onstart =
-        function () {
-
-            document
-                .getElementById("coreArea");
-
-            document
-                .getElementById("coreArea")
-                ?.classList
-                .add("listening");
-
-            document
-                .getElementById("micButton")
-                .textContent = "🔴";
-
+        recognition.onstart = () => {
+            isListening = true;
+            reactor.classList.add('listening');
+            statusText.innerText = "Listening...";
         };
 
-
-    recognition.onend =
-        function () {
-
-            document
-                .getElementById("coreArea")
-                ?.classList
-                .remove("listening");
-
-            document
-                .getElementById("micButton")
-                .textContent = "🎙️";
-
+        recognition.onend = () => {
+            isListening = false;
+            reactor.classList.remove('listening');
+            statusText.innerText = "Processing...";
         };
 
-
-    recognition.onresult =
-        function (event) {
-
-            const text =
-                event.results[0][0].transcript;
-
-            document
-                .getElementById("input")
-                .value = text;
-
-            command(text);
-
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('userInput').value = transcript;
+            handleCommand(transcript);
         };
 
-
-    recognition.onerror =
-        function () {
-
-            document
-                .getElementById("coreArea")
-                ?.classList
-                .remove("listening");
-
-            document
-                .getElementById("micButton")
-                .textContent = "🎙️";
-
-            respond(
-                "Sorry, I couldn't hear you."
-            );
-
+        recognition.onerror = () => {
+            isListening = false;
+            reactor.classList.remove('listening');
+            statusText.innerText = "System Standby";
         };
-
-}
-
-
-function startVoice() {
-
-    if (!recognition) {
-
-        respond(
-            "Voice recognition is not supported by this browser. Please try Chrome on Android."
-        );
-
-        return;
+    } else {
+        alert("Speech Recognition API is not supported in this browser. Please use Google Chrome.");
     }
 
-    try {
-
-        recognition.start();
-
-    } catch (error) {
-
-        console.log(error);
-
-    }
-}
-
-
-/*
-==========================================================
-                 TEXT INPUT
-==========================================================
-*/
-
-function sendMessage() {
-
-    const input =
-        document.getElementById("input");
-
-    const text =
-        input.value.trim();
-
-    if (!text) {
-        return;
+    function toggleListening() {
+        if (!recognition) return;
+        if (isListening) {
+            recognition.stop();
+        } else {
+            recognition.start();
+        }
     }
 
-    input.value = "";
+    function processInput() {
+        const inputField = document.getElementById('userInput');
+        const text = inputField.value.trim();
+        if (text) {
+            handleCommand(text);
+            inputField.value = '';
+        }
+    }
 
-    command(text);
-}
+    async function handleCommand(text) {
+        logMessage(`<b>You:</b> ${text}`);
+        const lower = text.toLowerCase();
 
+        // 1. Local App/Website Commands
+        if (lower.startsWith("open ")) {
+            const target = lower.replace("open ", "").trim();
+            openWebsiteOrApp(target);
+            return;
+        }
 
-document
-    .getElementById("input")
-    .addEventListener(
-        "keydown",
-        function (event) {
+        // 2. Query Gemini API for general questions
+        statusText.innerText = "Querying Database...";
+        const aiResponse = await fetchGeminiResponse(text);
+        
+        statusText.innerText = "System Standby";
+        logMessage(`<b>JARVIS:</b> ${aiResponse}`);
+        speakText(aiResponse);
+    }
 
-            if (event.key === "Enter") {
-                sendMessage();
+    function openWebsiteOrApp(target) {
+        let url = "";
+        let siteName = target;
+
+        if (target.includes("ny") || target.includes("new york times") || target.includes("nytimes")) {
+            url = "https://www.nytimes.com";
+            siteName = "New York Times";
+        } else if (target.includes("google")) {
+            url = "https://www.google.com";
+            siteName = "Google";
+        } else if (target.includes("youtube")) {
+            url = "https://www.youtube.com";
+            siteName = "YouTube";
+        } else if (target.includes("github")) {
+            url = "https://www.github.com";
+            siteName = "GitHub";
+        } else if (target.includes("reddit")) {
+            url = "https://www.reddit.com";
+            siteName = "Reddit";
+        } else {
+            url = `https://www.${target.replace(/\s+/g, '')}.com`;
+        }
+
+        const msg = `Opening ${siteName}, Sir.`;
+        logMessage(`<b>JARVIS:</b> ${msg}`);
+        speakText(msg);
+        window.open(url, '_blank');
+        statusText.innerText = "System Standby";
+    }
+
+    async function fetchGeminiResponse(promptText) {
+        if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
+            return "Sir, please set your Gemini API Key in the code before asking questions.";
+        }
+
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const systemPrompt = "You are JARVIS, Tony Stark's AI assistant. Keep your responses concise, polite, witty, and helpful. Address the user as Sir.";
+
+        try {
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [
+                            { text: systemPrompt },
+                            { text: promptText }
+                        ]
+                    }]
+                })
+            });
+
+            const data = await response.json();
+            if (data.candidates && data.candidates[0].content.parts[0].text) {
+                return data.candidates[0].content.parts[0].text;
+            } else {
+                return "I encountered an error retrieving data, Sir.";
             }
-
+        } catch (error) {
+            console.error(error);
+            return "Unable to establish a connection with the central server.";
         }
-    );
+    }
 
-
-/*
-==========================================================
-                 COMMAND ENGINE
-==========================================================
-*/
-
-function command(text) {
-
-    addMessage(text, "user");
-
-    const lower =
-        text.toLowerCase().trim();
-
-
-    /*
-    OPEN WEBSITE
-    */
-
-    for (const site in websites) {
-
-        if (
-
-            lower === site ||
-
-            lower.includes(
-                "open " + site
-            ) ||
-
-            lower.includes(
-                "launch " + site
-            ) ||
-
-            lower.includes(
-                "go to " + site
-            )
-
-        ) {
-
-            respond(
-                "Opening " + site + "."
-            );
-
-            setTimeout(
-                function () {
-
-                    window.location.href =
-                        websites[site];
-
-                },
-                500
-            );
-
-            return;
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); // Stop ongoing speech
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            utterance.pitch = 0.9;
+            window.speechSynthesis.speak(utterance);
         }
-
     }
 
-
-    /*
-    YOUTUBE SEARCH / PLAY
-    */
-
-    if (
-
-        lower.startsWith("play ") ||
-
-        lower.startsWith("search youtube for ")
-
-    ) {
-
-        let query =
-            lower
-                .replace(
-                    "search youtube for",
-                    ""
-                )
-                .replace(
-                    "play",
-                    ""
-                )
-                .trim();
-
-
-        if (query) {
-
-            respond(
-                "Searching YouTube for " +
-                query
-            );
-
-            setTimeout(
-                function () {
-
-                    window.location.href =
-                        "https://www.youtube.com/results?search_query=" +
-                        encodeURIComponent(query);
-
-                },
-                500
-            );
-
-            return;
-        }
-
+    function logMessage(msg) {
+        output.innerHTML += `<p style="margin-bottom: 8px;">${msg}</p>`;
+        output.scrollTop = output.scrollHeight;
     }
-
-
-    /*
-    GOOGLE SEARCH
-    */
-
-    if (
-
-        lower.startsWith("search ") ||
-
-        lower.startsWith("google ")
-
-    ) {
-
-        let query =
-            lower
-                .replace("search", "")
-                .replace("google", "")
-                .trim();
-
-
-        if (!query) {
-            respond("What would you like me to search for?");
-            return;
-        }
-
-
-        respond(
-            "Searching Google for " +
-            query
-        );
-
-
-        setTimeout(
-            function () {
-
-                window.location.href =
-                    "https://www.google.com/search?q=" +
-                    encodeURIComponent(query);
-
-            },
-            500
-        );
-
-        return;
-    }
-
-
-    /*
-    TIME
-    */
-
-    if (
-
-        lower === "time" ||
-
-        lower.includes(
-            "what time"
-        )
-
-    ) {
-
-        const time =
-            new Date()
-                .toLocaleTimeString(
-                    "en-IN",
-                    {
-                        hour: "numeric",
-                        minute: "2-digit"
-                    }
-                );
-
-
-        respond(
-            "The time is " + time
-        );
-
-        return;
-    }
-
-
-    /*
-    DATE
-    */
-
-    if (
-
-        lower.includes(
-            "what date"
-        ) ||
-
-        lower.includes(
-            "today's date"
-        ) ||
-
-        lower === "date"
-
-    ) {
-
-        const date =
-            new Date()
-                .toLocaleDateString(
-                    "en-IN",
-                    {
-                        weekday: "long",
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric"
-                    }
-                );
-
-
-        respond(
-            "Today is " + date
-        );
-
-        return;
-    }
-
-
-    /*
-    CAMERA
-    */
-
-    if (
-        lower.includes("open camera")
-    ) {
-
-        respond(
-            "Trying to open the camera."
-        );
-
-        window.location.href =
-            "intent:#Intent;" +
-            "action=android.media.action.IMAGE_CAPTURE;" +
-            "end";
-
-        return;
-    }
-
-
-    /*
-    PHONE
-    */
-
-    if (
-        lower.includes("open phone")
-    ) {
-
-        respond(
-            "Trying to open the phone application."
-        );
-
-        window.location.href =
-            "tel:";
-
-        return;
-    }
-
-
-    /*
-    EMAIL
-    */
-
-    if (
-        lower.includes("open email") ||
-        lower.includes("open gmail")
-    ) {
-
-        window.location.href =
-            websites.gmail;
-
-        return;
-    }
-
-
-    /*
-    IF NO LOCAL COMMAND:
-    SEND TO OPENAI
-    */
-
-    askOpenAI(text);
-}
-
-
-/*
-==========================================================
-                 OPENAI API
-==========================================================
-*/
-
-async function askOpenAI(question) {
-
-    if (
-
-        !OPENAI_API_KEY ||
-
-        OPENAI_API_KEY ===
-        "PASTE_YOUR_OPENAI_API_KEY_HERE"
-
-    ) {
-
-        respond(
-            "Please add your OpenAI API key in the code first."
-        );
-
-        return;
-    }
-
-
-    /*
-    SHOW THINKING
-    */
-
-    const chat =
-        document.getElementById("chat");
-
-    const thinking =
-        document.createElement("div");
-
-    thinking.className =
-        "message jarvis";
-
-    thinking.textContent =
-        "Thinking...";
-
-    chat.appendChild(thinking);
-
-    chat.scrollTop =
-        chat.scrollHeight;
-
-
-    try {
-
-        const response =
-            await fetch(
-                "https://api.openai.com/v1/responses",
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Authorization":
-                            "Bearer " +
-                            OPENAI_API_KEY
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            model:
-                                OPENAI_MODEL,
-
-                            instructions:
-                                `
-You are JARVIS, a friendly
-personal AI assistant.
-
-Answer the user clearly and
-helpfully.
-
-Keep normal answers reasonably
-short because JARVIS will read
-the answer aloud.
-
-You can help with:
-
-- school subjects
-- mathematics
-- science
-- programming
-- JavaScript
-- Python
-- HTML
-- CSS
-- technology
-- general knowledge
-- explanations
-- brainstorming
-
-If the user asks you to perform
-an action that this browser cannot
-actually perform, be honest about it.
-Do not pretend that you controlled
-the phone when you did not.
-`,
-
-                            input:
-                                question
-
-                        })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            console.error(
-                "OpenAI API error:",
-                data
-            );
-
-            thinking.textContent =
-                "OpenAI error: " +
-                (
-                    data?.error?.message ||
-                    "Request failed."
-                );
-
-            return;
-        }
-
-
-        /*
-        EXTRACT RESPONSE TEXT
-        */
-
-        let answer = "";
-
-
-        if (data.output) {
-
-            for (
-                const item
-                of data.output
-            ) {
-
-                if (
-                    item.type === "message" &&
-                    item.content
-                ) {
-
-                    for (
-                        const part
-                        of item.content
-                    ) {
-
-                        if (
-                            part.type ===
-                            "output_text"
-                        ) {
-
-                            answer +=
-                                part.text;
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-
-        /*
-        FALLBACK
-        */
-
-        if (!answer) {
-
-            answer =
-                "I received a response, but I couldn't read it.";
-
-        }
-
-
-        /*
-        DISPLAY
-        */
-
-        thinking.textContent =
-            answer;
-
-
-        /*
-        SPEAK
-        */
-
-        speak(answer);
-
-
-    } catch (error) {
-
-        console.error(
-            "Connection error:",
-            error
-        );
-
-        thinking.textContent =
-            "Connection error. " +
-            error.message;
-
-    }
-
-}
-
 </script>
-
 </body>
 </html>
