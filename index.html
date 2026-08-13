@@ -1,338 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. Web Assistant</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#020812">
+<title>JARVIS AI Demo</title>
 
-        body {
-            background-color: #030a16;
-            color: #00f0ff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
 
-        .container {
-            width: 100%;
-            max-width: 700px;
-            background: rgba(4, 20, 40, 0.8);
-            border: 1px solid #00f0ff55;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
-            border-radius: 16px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
+body{
+    min-height:100vh;
+    background:
+    radial-gradient(circle at 50% 15%,#123d58,#06121d 40%,#010509 100%);
+    color:white;
+    font-family:Arial,sans-serif;
+}
 
-        /* Arc Reactor Visualizer */
-        .reactor {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid #00f0ff;
-            box-shadow: 0 0 20px #00f0ff, inset 0 0 20px #00f0ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            transition: all 0.3s ease;
-        }
+.app{
+    max-width:520px;
+    min-height:100vh;
+    margin:auto;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+}
 
-        .reactor-inner {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #00f0ff;
-            box-shadow: 0 0 15px #00f0ff;
-        }
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
 
-        .listening {
-            animation: pulse 1.2s infinite alternate;
-            border-color: #ff2a6d;
-            box-shadow: 0 0 30px #ff2a6d, inset 0 0 30px #ff2a6d;
-        }
-        .listening .reactor-inner {
-            background: #ff2a6d;
-            box-shadow: 0 0 20px #ff2a6d;
-        }
+.logo{
+    font-size:29px;
+    font-weight:bold;
+    letter-spacing:5px;
+    text-shadow:0 0 15px #00eaff;
+}
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); }
-            100% { transform: scale(1.08); }
-        }
+.status{
+    color:#00eaff;
+    font-size:11px;
+}
 
-        h1 {
-            font-size: 1.8rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px #00f0ff;
-        }
+.dot{
+    display:inline-block;
+    width:7px;
+    height:7px;
+    background:#00eaff;
+    border-radius:50%;
+    box-shadow:0 0 12px #00eaff;
+}
 
-        .status {
-            font-size: 0.9rem;
-            color: #70a0c0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+.core-area{
+    height:235px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
 
-        .display-box {
-            width: 100%;
-            min-height: 120px;
-            max-height: 250px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #00f0ff33;
-            border-radius: 8px;
-            padding: 15px;
-            overflow-y: auto;
-            color: #d0f0ff;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
+.ring{
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    border:2px solid rgba(0,234,255,.35);
+    box-shadow:
+    0 0 30px rgba(0,234,255,.25),
+    inset 0 0 30px rgba(0,234,255,.12);
+    animation:spin 12s linear infinite;
+}
 
-        .controls {
-            display: flex;
-            width: 100%;
-            gap: 10px;
-        }
+.ring:before{
+    content:"";
+    position:absolute;
+    width:150px;
+    height:150px;
+    margin:23px;
+    border-radius:50%;
+    border:1px solid rgba(0,234,255,.35);
+}
 
-        input[type="text"] {
-            flex: 1;
-            background: rgba(0, 10, 25, 0.8);
-            border: 1px solid #00f0ff55;
-            border-radius: 6px;
-            padding: 12px 16px;
-            color: #fff;
-            outline: none;
-        }
+.ring:after{
+    content:"";
+    position:absolute;
+    width:95px;
+    height:95px;
+    margin:51px;
+    border-radius:50%;
+    border:1px solid rgba(0,234,255,.4);
+}
 
-        input[type="text"]:focus {
-            border-color: #00f0ff;
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
-        }
+.core{
+    position:absolute;
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:radial-gradient(circle,#fff,#65edff 20%,#007c9e 55%,#00151e);
+    box-shadow:0 0 20px #00eaff,0 0 60px rgba(0,234,255,.6);
+    animation:pulse 1.5s infinite;
+}
 
-        button {
-            background: #00f0ff1a;
-            border: 1px solid #00f0ff;
-            color: #00f0ff;
-            padding: 12px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
+.listening .core{
+    animation:listening .45s infinite alternate;
+}
 
-        button:hover {
-            background: #00f0ff;
-            color: #030a16;
-            box-shadow: 0 0 15px #00f0ff;
-        }
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
 
-        .quick-commands {
-            font-size: 0.8rem;
-            color: #5080a0;
-            text-align: center;
-        }
-    </style>
+@keyframes pulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.1)}
+}
+
+@keyframes listening{
+    to{transform:scale(1.25)}
+}
+
+.chat{
+    flex:1;
+    max-height:35vh;
+    overflow-y:auto;
+    margin-bottom:12px;
+}
+
+.message{
+    max-width:90%;
+    padding:13px 15px;
+    margin-bottom:10px;
+    border-radius:16px;
+    line-height:1.5;
+    font-size:14px;
+    white-space:pre-wrap;
+}
+
+.jarvis{
+    background:rgba(8,40,60,.85);
+    border:1px solid rgba(0,234,255,.2);
+}
+
+.user{
+    margin-left:auto;
+    background:rgba(0,130,170,.3);
+    border:1px solid rgba(0,234,255,.2);
+}
+
+.input-area{
+    display:flex;
+    gap:7px;
+    padding:7px;
+    border-radius:17px;
+    background:rgba(3,15,25,.95);
+    border:1px solid rgba(0,234,255,.25);
+}
+
+input{
+    flex:1;
+    min-width:0;
+    background:transparent;
+    border:0;
+    outline:0;
+    color:white;
+    padding:10px;
+    font-size:15px;
+}
+
+input::placeholder{
+    color:#66808e;
+}
+
+.send{
+    width:45px;
+    height:45px;
+    border:0;
+    border-radius:13px;
+    background:#00bfd8;
+    font-size:20px;
+}
+
+.mic{
+    width:65px;
+    height:65px;
+    margin:14px auto;
+    border-radius:50%;
+    border:2px solid rgba(0,234,255,.5);
+    background:radial-gradient(circle,#145e73,#062d3b);
+    color:white;
+    font-size:25px;
+    box-shadow:0 0 25px rgba(0,234,255,.3);
+}
+
+.section-title{
+    color:#688696;
+    font-size:11px;
+    letter-spacing:1px;
+    margin-bottom:8px;
+}
+
+.quick{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.quick button{
+    min-height:47px;
+    padding:7px 3px;
+    border-radius:12px;
+    border:1px solid rgba(0,234,255,.15);
+    background:rgba(8,35,50,.85);
+    color:#b9eff8;
+    font-size:11px;
+}
+
+.quick button:active{
+    transform:scale(.96);
+    background:rgba(0,180,220,.3);
+}
+
+.footer{
+    text-align:center;
+    color:#466170;
+    font-size:10px;
+    margin-top:14px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>J.A.R.V.I.S.</h1>
-    <div class="reactor" id="reactor">
-        <div class="reactor-inner"></div>
-    </div>
-    <div class="status" id="statusText">System Standby</div>
+<div class="app">
 
-    <div class="display-box" id="output">
-        Welcome back, Sir. How may I assist you today?
-    </div>
-
-    <div class="controls">
-        <input type="text" id="userInput" placeholder="Ask JARVIS or give a command..." onkeydown="if(event.key==='Enter') processInput()">
-        <button onclick="processInput()">Send</button>
-        <button onclick="toggleListening()" id="micBtn">🎙️ Voice</button>
-    </div>
-
-    <div class="quick-commands">
-        Try saying: <i>"Open Google"</i>, <i>"Open YouTube"</i>, <i>"Open NY Times"</i>, or ask any question.
+<div class="header">
+    <div class="logo">JARVIS</div>
+    <div class="status">
+        <span class="dot"></span> DEMO ONLINE
     </div>
 </div>
 
-<script>
-    // ⚠️ REPLACE THIS WITH YOUR GEMINI API KEY
-    const GEMINI_API_KEY = "AQ.Ab8RN6Issm8J4PKNmA_PLFzERCDWl35LlyoG5O_cHvaeYLjVyA";
-
-    const output = document.getElementById('output');
-    const statusText = document.getElementById('statusText');
-    const reactor = document.getElementById('reactor');
-    let recognition = null;
-    let isListening = false;
-
-    // Speech Recognition Setup
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-        recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = 'en-US';
-
-        recognition.onstart = () => {
-            isListening = true;
-            reactor.classList.add('listening');
-            statusText.innerText = "Listening...";
-        };
-
-        recognition.onend = () => {
-            isListening = false;
-            reactor.classList.remove('listening');
-            statusText.innerText = "Processing...";
-        };
-
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            document.getElementById('userInput').value = transcript;
-            handleCommand(transcript);
-        };
-
-        recognition.onerror = () => {
-            isListening = false;
-            reactor.classList.remove('listening');
-            statusText.innerText = "System Standby";
-        };
-    } else {
-        alert("Speech Recognition API is not supported in this browser. Please use Google Chrome.");
-    }
-
-    function toggleListening() {
-        if (!recognition) return;
-        if (isListening) {
-            recognition.stop();
-        } else {
-            recognition.start();
-        }
-    }
-
-    function processInput() {
-        const inputField = document.getElementById('userInput');
-        const text = inputField.value.trim();
-        if (text) {
-            handleCommand(text);
-            inputField.value = '';
-        }
-    }
-
-    async function handleCommand(text) {
-        logMessage(`<b>You:</b> ${text}`);
-        const lower = text.toLowerCase();
-
-        // 1. Local App/Website Commands
-        if (lower.startsWith("open ")) {
-            const target = lower.replace("open ", "").trim();
-            openWebsiteOrApp(target);
-            return;
-        }
-
-        // 2. Query Gemini API for general questions
-        statusText.innerText = "Querying Database...";
-        const aiResponse = await fetchGeminiResponse(text);
-        
-        statusText.innerText = "System Standby";
-        logMessage(`<b>JARVIS:</b> ${aiResponse}`);
-        speakText(aiResponse);
-    }
-
-    function openWebsiteOrApp(target) {
-        let url = "";
-        let siteName = target;
-
-        if (target.includes("ny") || target.includes("new york times") || target.includes("nytimes")) {
-            url = "https://www.nytimes.com";
-            siteName = "New York Times";
-        } else if (target.includes("google")) {
-            url = "https://www.google.com";
-            siteName = "Google";
-        } else if (target.includes("youtube")) {
-            url = "https://www.youtube.com";
-            siteName = "YouTube";
-        } else if (target.includes("github")) {
-            url = "https://www.github.com";
-            siteName = "GitHub";
-        } else if (target.includes("reddit")) {
-            url = "https://www.reddit.com";
-            siteName = "Reddit";
-        } else {
-            url = `https://www.${target.replace(/\s+/g, '')}.com`;
-        }
-
-        const msg = `Opening ${siteName}, Sir.`;
-        logMessage(`<b>JARVIS:</b> ${msg}`);
-        speakText(msg);
-        window.open(url, '_blank');
-        statusText.innerText = "System Standby";
-    }
-
-    async function fetchGeminiResponse(promptText) {
-        if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
-            return "Sir, please set your Gemini API Key in the code before asking questions.";
-        }
-
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-        
-        const systemPrompt = "You are JARVIS, Tony Stark's AI assistant. Keep your responses concise, polite, witty, and helpful. Address the user as Sir.";
-
-        try {
-            const response = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [
-                            { text: systemPrompt },
-                            { text: promptText }
-                        ]
-                    }]
-                })
-            });
-
-            const data = await response.json();
-            if (data.candidates && data.candidates[0].content.parts[0].text) {
-                return data.candidates[0].content.parts[0].text;
-            } else {
-                return "I encountered an error retrieving data, Sir.";
-            }
-        } catch (error) {
-            console.error(error);
-            return "Unable to establish a connection with the central server.";
-        }
-    }
-
-    function speakText(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); // Stop ongoing speech
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1.0;
-            utterance.pitch = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
-    }
-
-    function logMessage(msg) {
-        output.innerHTML += `<p style="margin-bottom: 8px;">${msg}</p>`;
-        output.scrollTop = output.scrollHeight;
-    }
-</script>
-</body>
-</html>
+<div class="core-area" id="coreArea">
+    <div class="ring"></div>
