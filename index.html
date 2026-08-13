@@ -242,3 +242,642 @@ input::placeholder{
 
 <div class="core-area" id="coreArea">
     <div class="ring"></div>
+        <div class="core"></div>
+</div>
+
+<div class="chat" id="chat">
+
+    <div class="message jarvis">
+        Hello. I am JARVIS.
+
+        This is my demonstration mode.
+
+        Try saying:
+        "Search Google for artificial intelligence"
+        or
+        "Open YouTube".
+    </div>
+
+</div>
+
+<div class="input-area">
+
+    <input
+        id="input"
+        type="text"
+        placeholder="Ask or command JARVIS..."
+        autocomplete="off">
+
+    <button
+        class="send"
+        onclick="sendMessage()">
+        ➤
+    </button>
+
+</div>
+
+<button
+    class="mic"
+    id="mic"
+    onclick="startVoice()">
+    🎙️
+</button>
+
+<div class="section-title">
+    QUICK COMMANDS
+</div>
+
+<div class="quick">
+
+    <button onclick="command('open YouTube')">
+        ▶️ YouTube
+    </button>
+
+    <button onclick="command('search Google for artificial intelligence')">
+        🔎 Google
+    </button>
+
+    <button onclick="command('open Amazon')">
+        🛒 Amazon
+    </button>
+
+    <button onclick="command('open Flipkart')">
+        🛍️ Flipkart
+    </button>
+
+    <button onclick="command('open WhatsApp')">
+        💬 WhatsApp
+    </button>
+
+    <button onclick="command('open Instagram')">
+        📸 Instagram
+    </button>
+
+    <button onclick="command('open Spotify')">
+        🎵 Spotify
+    </button>
+
+    <button onclick="command('open Gmail')">
+        📧 Gmail
+    </button>
+
+    <button onclick="command('open Maps')">
+        🗺️ Maps
+    </button>
+
+    <button onclick="command('open GitHub')">
+        💻 GitHub
+    </button>
+
+    <button onclick="command('open LinkedIn')">
+        💼 LinkedIn
+    </button>
+
+    <button onclick="command('open Wikipedia')">
+        📚 Wikipedia
+    </button>
+
+    <button onclick="command('what time is it')">
+        🕐 Time
+    </button>
+
+    <button onclick="command('what is the date')">
+        📅 Date
+    </button>
+
+    <button onclick="command('open calculator')">
+        🧮 Calculator
+    </button>
+
+    <button onclick="command('open camera')">
+        📷 Camera
+    </button>
+
+</div>
+
+<div class="footer">
+    JARVIS AI DEMO • Built with HTML, CSS & JavaScript
+</div>
+
+</div>
+
+<script>
+
+/* WEBSITE LINKS */
+
+const sites = {
+
+    youtube: "https://www.youtube.com/",
+    google: "https://www.google.com/",
+    amazon: "https://www.amazon.in/",
+    flipkart: "https://www.flipkart.com/",
+    whatsapp: "https://web.whatsapp.com/",
+    instagram: "https://www.instagram.com/",
+    spotify: "https://open.spotify.com/",
+    gmail: "https://mail.google.com/",
+    maps: "https://maps.google.com/",
+    github: "https://github.com/",
+    linkedin: "https://www.linkedin.com/",
+    wikipedia: "https://www.wikipedia.org/",
+    reddit: "https://www.reddit.com/",
+    netflix: "https://www.netflix.com/",
+    myntra: "https://www.myntra.com/",
+    meesho: "https://www.meesho.com/",
+    chatgpt: "https://chatgpt.com/",
+    drive: "https://drive.google.com/",
+    translate: "https://translate.google.com/"
+
+};
+
+
+/* CHAT */
+
+function addMessage(text, type) {
+
+    const chat =
+        document.getElementById("chat");
+
+    const div =
+        document.createElement("div");
+
+    div.className =
+        "message " + type;
+
+    div.textContent =
+        text;
+
+    chat.appendChild(div);
+
+    chat.scrollTop =
+        chat.scrollHeight;
+}
+
+
+/* VOICE OUTPUT */
+
+function speak(text) {
+
+    if (!window.speechSynthesis)
+        return;
+
+    speechSynthesis.cancel();
+
+    const speech =
+        new SpeechSynthesisUtterance(text);
+
+    speech.lang = "en-IN";
+    speech.rate = 0.95;
+    speech.pitch = 1;
+
+    speechSynthesis.speak(speech);
+}
+
+
+function reply(text) {
+
+    addMessage(text, "jarvis");
+
+    speak(text);
+}
+
+
+/* VOICE INPUT */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+let recognition = null;
+
+if (SpeechRecognition) {
+
+    recognition =
+        new SpeechRecognition();
+
+    recognition.lang = "en-IN";
+
+    recognition.continuous = false;
+
+    recognition.interimResults = false;
+
+
+    recognition.onstart = function () {
+
+        document
+            .getElementById("coreArea")
+            .classList.add("listening");
+
+        document
+            .getElementById("mic")
+            .textContent = "🔴";
+    };
+
+
+    recognition.onend = function () {
+
+        document
+            .getElementById("coreArea")
+            .classList.remove("listening");
+
+        document
+            .getElementById("mic")
+            .textContent = "🎙️";
+    };
+
+
+    recognition.onresult = function (event) {
+
+        const text =
+            event.results[0][0].transcript;
+
+        document
+            .getElementById("input")
+            .value = text;
+
+        command(text);
+    };
+
+
+    recognition.onerror = function () {
+
+        reply(
+            "Sorry, I couldn't hear you."
+        );
+    };
+
+}
+
+
+function startVoice() {
+
+    if (!recognition) {
+
+        reply(
+            "Voice recognition is not supported in this browser. Try Chrome on Android."
+        );
+
+        return;
+    }
+
+    try {
+
+        recognition.start();
+
+    } catch (e) {
+
+        console.log(e);
+
+    }
+}
+
+
+/* TEXT INPUT */
+
+function sendMessage() {
+
+    const input =
+        document.getElementById("input");
+
+    const text =
+        input.value.trim();
+
+    if (!text)
+        return;
+
+    input.value = "";
+
+    command(text);
+}
+
+
+document
+    .getElementById("input")
+    .addEventListener(
+        "keydown",
+        function (e) {
+
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+
+        }
+    );
+
+
+/* MAIN COMMAND ENGINE */
+
+function command(text) {
+
+    addMessage(text, "user");
+
+    const lower =
+        text.toLowerCase().trim();
+
+
+    /* OPEN WEBSITES */
+
+    for (const site in sites) {
+
+        if (
+            lower === site ||
+            lower.includes("open " + site) ||
+            lower.includes("launch " + site) ||
+            lower.includes("go to " + site)
+        ) {
+
+            reply(
+                "Opening " + site + "."
+            );
+
+            setTimeout(function () {
+
+                window.location.href =
+                    sites[site];
+
+            }, 500);
+
+            return;
+        }
+    }
+
+
+    /* GOOGLE SEARCH */
+
+    if (
+        lower.includes("search google for") ||
+        lower.startsWith("google ")
+    ) {
+
+        let query =
+            lower
+                .replace(
+                    "search google for",
+                    ""
+                )
+                .replace(
+                    "google",
+                    ""
+                )
+                .trim();
+
+        if (!query) {
+
+            reply(
+                "What should I search for?"
+            );
+
+            return;
+        }
+
+        reply(
+            "Searching Google for " +
+            query + "."
+        );
+
+        setTimeout(function () {
+
+            window.location.href =
+                "https://www.google.com/search?q=" +
+                encodeURIComponent(query);
+
+        }, 700);
+
+        return;
+    }
+
+
+    /* GENERAL SEARCH */
+
+    if (lower.startsWith("search ")) {
+
+        let query =
+            lower
+                .replace("search", "")
+                .trim();
+
+        reply(
+            "Searching Google for " +
+            query + "."
+        );
+
+        setTimeout(function () {
+
+            window.location.href =
+                "https://www.google.com/search?q=" +
+                encodeURIComponent(query);
+
+        }, 700);
+
+        return;
+    }
+
+
+    /* YOUTUBE SEARCH */
+
+    if (
+        lower.startsWith("play ") ||
+        lower.includes("search youtube for")
+    ) {
+
+        let query =
+            lower
+                .replace(
+                    "search youtube for",
+                    ""
+                )
+                .replace(
+                    "play",
+                    ""
+                )
+                .trim();
+
+        if (!query) {
+
+            reply(
+                "What should I search for on YouTube?"
+            );
+
+            return;
+        }
+
+        reply(
+            "Searching YouTube for " +
+            query + "."
+        );
+
+        setTimeout(function () {
+
+            window.location.href =
+                "https://www.youtube.com/results?search_query=" +
+                encodeURIComponent(query);
+
+        }, 700);
+
+        return;
+    }
+
+
+    /* TIME */
+
+    if (
+        lower.includes("what time") ||
+        lower === "time"
+    ) {
+
+        const time =
+            new Date().toLocaleTimeString(
+                "en-IN",
+                {
+                    hour: "numeric",
+                    minute: "2-digit"
+                }
+            );
+
+        reply(
+            "The time is " +
+            time + "."
+        );
+
+        return;
+    }
+
+
+    /* DATE */
+
+    if (
+        lower.includes("what date") ||
+        lower.includes("today's date") ||
+        lower === "date"
+    ) {
+
+        const date =
+            new Date().toLocaleDateString(
+                "en-IN",
+                {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+        reply(
+            "Today is " +
+            date + "."
+        );
+
+        return;
+    }
+
+
+    /* CALCULATOR */
+
+    if (
+        lower.includes("open calculator") ||
+        lower === "calculator"
+    ) {
+
+        reply(
+            "Opening the calculator."
+        );
+
+        setTimeout(function () {
+
+            window.location.href =
+                "https://www.google.com/search?q=calculator";
+
+        }, 500);
+
+        return;
+    }
+
+
+    /* CAMERA */
+
+    if (lower.includes("open camera")) {
+
+        reply(
+            "Trying to open the camera."
+        );
+
+        window.location.href =
+            "intent:#Intent;" +
+            "action=android.media.action.IMAGE_CAPTURE;" +
+            "end";
+
+        return;
+    }
+
+
+    /* PHONE */
+
+    if (lower.includes("open phone")) {
+
+        reply(
+            "Opening the phone application."
+        );
+
+        window.location.href =
+            "tel:";
+
+        return;
+    }
+
+
+    /* HELP */
+
+    if (
+        lower === "help" ||
+        lower.includes("what can you do")
+    ) {
+
+        reply(
+`I can currently:
+
+• Search Google
+• Search YouTube
+• Open websites
+• Open calculator
+• Try to open camera
+• Try to open phone
+• Tell the time
+• Tell the date
+• Listen to your voice
+• Speak my responses
+
+Try saying:
+"Search Google for artificial intelligence"`
+        );
+
+        return;
+    }
+
+
+    /* GREETING */
+
+    if (
+        lower === "hello" ||
+        lower === "hi" ||
+        lower.includes("hello jarvis")
+    ) {
+
+        reply(
+            "Hello. JARVIS demonstration mode is online. How can I help?"
+        );
+
+        return;
+    }
+
+
+    /* UNKNOWN COMMAND */
+
+    reply(
+        "I don't have that capability in this demonstration yet. Try saying search Google for followed by your question."
+    );
+
+}
+
+</script>
+
+</body>
+</html>
